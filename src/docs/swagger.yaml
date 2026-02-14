@@ -1,0 +1,1268 @@
+openapi: 3.0.0
+info:
+  title: Masakin API
+  description: Production-ready RESTful API for Masakin - a social cooking platform. "Solusi sebelum kamu pesan online."
+  version: 1.0.0
+  contact:
+    name: Masakin API Support
+    email: support@masakin.com
+
+servers:
+  - url: http://localhost:5001/api/v1
+    description: Development server
+  - url: https://api.masakin.com/api/v1
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization endpoints
+  - name: Recipes
+    description: Recipe management, reactions, and bookmarks
+  - name: Comments
+    description: Comment system with threading support
+  - name: Users
+    description: User profiles, follow/unfollow, and analytics
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token for authentication
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://example.com/avatar.jpg"
+        bio:
+          type: string
+          example: "Passionate home chef"
+        followers:
+          type: array
+          items:
+            type: string
+        following:
+          type: array
+          items:
+            type: string
+        savedRecipes:
+          type: array
+          items:
+            type: string
+        role:
+          type: string
+          enum: [user, admin]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Recipe:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        title:
+          type: string
+          example: "Nasi Goreng Special"
+        description:
+          type: string
+          example: "Delicious Indonesian fried rice with special spices"
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: ["2 cups rice", "2 eggs", "Garlic", "Shallots", "Soy sauce"]
+        steps:
+          type: array
+          items:
+            type: string
+          example: ["Cook rice", "Fry eggs", "Mix ingredients"]
+        images:
+          type: array
+          items:
+            type: string
+          example: ["https://example.com/image1.jpg"]
+        videoUrl:
+          type: string
+          nullable: true
+          example: "https://youtube.com/watch?v=xxx"
+        cookingTime:
+          type: integer
+          description: Cooking time in minutes
+          example: 30
+        portion:
+          type: integer
+          example: 4
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+          example: "medium"
+        category:
+          type: string
+          example: "Indonesian"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["rice", "spicy", "quick"]
+        author:
+          $ref: "#/components/schemas/User"
+        reactions:
+          type: object
+          properties:
+            like:
+              type: array
+              items:
+                type: string
+            love:
+              type: array
+              items:
+                type: string
+            fire:
+              type: array
+              items:
+                type: string
+        savesCount:
+          type: integer
+          example: 42
+        commentsCount:
+          type: integer
+          example: 15
+        status:
+          type: string
+          enum: [draft, published]
+          example: "published"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Comment:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        user:
+          $ref: "#/components/schemas/User"
+        recipe:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        message:
+          type: string
+          example: "This recipe is amazing!"
+        parentComment:
+          type: string
+          nullable: true
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          example: 1
+        totalPages:
+          type: integer
+          example: 5
+        totalRecipes:
+          type: integer
+          example: 50
+        limit:
+          type: integer
+          example: 10
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Error message"
+        errorCode:
+          type: string
+          example: "VALIDATION_ERROR"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation successful"
+
+paths:
+  # Authentication Endpoints
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user
+      description: Create a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: "password123"
+                avatar:
+                  type: string
+                  format: uri
+                  example: "https://example.com/avatar.jpg"
+                bio:
+                  type: string
+                  example: "Passionate home chef"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User registered successfully"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                      accessToken:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      refreshToken:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        "400":
+          description: Validation error or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      description: Authenticate user and receive access tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login successful"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                      accessToken:
+                        type: string
+                      refreshToken:
+                        type: string
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Generate new access token using refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        "200":
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Token refreshed successfully"
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+        "401":
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user
+      description: Invalidate refresh token
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Recipe Endpoints
+  /recipes:
+    get:
+      tags:
+        - Recipes
+      summary: Get all recipes
+      description: Retrieve recipes with filtering and pagination
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+          description: Items per page
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search in title and description
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category
+        - name: difficulty
+          in: query
+          schema:
+            type: string
+            enum: [easy, medium, hard]
+          description: Filter by difficulty
+        - name: tags
+          in: query
+          schema:
+            type: string
+          description: Comma-separated tags
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, published]
+            default: published
+          description: Filter by status
+        - name: author
+          in: query
+          schema:
+            type: string
+          description: Filter by author ID
+      responses:
+        "200":
+          description: Recipes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      recipes:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Recipe"
+                      pagination:
+                        $ref: "#/components/schemas/Pagination"
+
+    post:
+      tags:
+        - Recipes
+      summary: Create new recipe
+      description: Create a new recipe (draft or published)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - ingredients
+                - steps
+                - cookingTime
+                - portion
+                - difficulty
+                - category
+              properties:
+                title:
+                  type: string
+                  example: "Nasi Goreng Special"
+                description:
+                  type: string
+                  example: "Delicious Indonesian fried rice"
+                ingredients:
+                  type: array
+                  items:
+                    type: string
+                  example: ["2 cups rice", "2 eggs"]
+                steps:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Cook rice", "Fry eggs"]
+                images:
+                  type: array
+                  items:
+                    type: string
+                  example: ["https://example.com/image.jpg"]
+                videoUrl:
+                  type: string
+                  example: "https://youtube.com/watch?v=xxx"
+                cookingTime:
+                  type: integer
+                  example: 30
+                portion:
+                  type: integer
+                  example: 4
+                difficulty:
+                  type: string
+                  enum: [easy, medium, hard]
+                  example: "medium"
+                category:
+                  type: string
+                  example: "Indonesian"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["rice", "spicy"]
+                status:
+                  type: string
+                  enum: [draft, published]
+                  default: draft
+                  example: "published"
+      responses:
+        "201":
+          description: Recipe created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Recipe created successfully"
+                  data:
+                    $ref: "#/components/schemas/Recipe"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /recipes/{id}:
+    get:
+      tags:
+        - Recipes
+      summary: Get single recipe
+      description: Retrieve a recipe by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      responses:
+        "200":
+          description: Recipe retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/Recipe"
+        "404":
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - Recipes
+      summary: Update recipe
+      description: Update own recipe
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: string
+                steps:
+                  type: array
+                  items:
+                    type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                videoUrl:
+                  type: string
+                cookingTime:
+                  type: integer
+                portion:
+                  type: integer
+                difficulty:
+                  type: string
+                  enum: [easy, medium, hard]
+                category:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                status:
+                  type: string
+                  enum: [draft, published]
+      responses:
+        "200":
+          description: Recipe updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Recipe updated successfully"
+                  data:
+                    $ref: "#/components/schemas/Recipe"
+        "403":
+          description: Forbidden - not the recipe author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Recipes
+      summary: Delete recipe
+      description: Delete own recipe
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      responses:
+        "200":
+          description: Recipe deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "403":
+          description: Forbidden - not the recipe author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /recipes/{id}/react:
+    post:
+      tags:
+        - Recipes
+      summary: React to recipe
+      description: Add or change reaction (like, love, fire)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+              properties:
+                type:
+                  type: string
+                  enum: [like, love, fire]
+                  example: "love"
+      responses:
+        "200":
+          description: Reaction added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Reaction added successfully"
+                  data:
+                    $ref: "#/components/schemas/Recipe"
+        "404":
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Recipes
+      summary: Remove reaction
+      description: Remove user's reaction from recipe
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      responses:
+        "200":
+          description: Reaction removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Reaction removed successfully"
+                  data:
+                    $ref: "#/components/schemas/Recipe"
+
+  /recipes/{id}/save:
+    post:
+      tags:
+        - Recipes
+      summary: Save recipe
+      description: Bookmark a recipe
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      responses:
+        "200":
+          description: Recipe saved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Recipe already saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Recipes
+      summary: Unsave recipe
+      description: Remove recipe from bookmarks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      responses:
+        "200":
+          description: Recipe unsaved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Recipe not saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /recipes/{id}/comments:
+    post:
+      tags:
+        - Comments
+      summary: Create comment
+      description: Add a comment to a recipe (supports threading)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: "This recipe is amazing!"
+                parentComment:
+                  type: string
+                  description: Parent comment ID for threaded replies
+                  example: "507f1f77bcf86cd799439011"
+      responses:
+        "201":
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Comment created successfully"
+                  data:
+                    $ref: "#/components/schemas/Comment"
+        "404":
+          description: Recipe or parent comment not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags:
+        - Comments
+      summary: Get comments
+      description: Retrieve comments for a recipe with pagination
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Recipe ID
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Items per page
+      responses:
+        "200":
+          description: Comments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      comments:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: "#/components/schemas/Comment"
+                            - type: object
+                              properties:
+                                replies:
+                                  type: array
+                                  items:
+                                    $ref: "#/components/schemas/Comment"
+                      pagination:
+                        type: object
+                        properties:
+                          currentPage:
+                            type: integer
+                          totalPages:
+                            type: integer
+                          totalComments:
+                            type: integer
+                          limit:
+                            type: integer
+
+  # User Endpoints
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user profile
+      description: Retrieve user profile by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags:
+        - Users
+      summary: Update profile
+      description: Update own user profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                avatar:
+                  type: string
+                  format: uri
+                  example: "https://example.com/avatar.jpg"
+                bio:
+                  type: string
+                  example: "Passionate home chef"
+      responses:
+        "200":
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Profile updated successfully"
+                  data:
+                    $ref: "#/components/schemas/User"
+        "403":
+          description: Forbidden - can only update own profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{id}/recipes:
+    get:
+      tags:
+        - Users
+      summary: Get user's recipes
+      description: Retrieve all recipes by a specific user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, published]
+      responses:
+        "200":
+          description: User recipes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      recipes:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Recipe"
+                      pagination:
+                        $ref: "#/components/schemas/Pagination"
+
+  /users/{id}/follow:
+    post:
+      tags:
+        - Users
+      summary: Follow user
+      description: Follow another user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID to follow
+      responses:
+        "200":
+          description: User followed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Already following or cannot follow self
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Users
+      summary: Unfollow user
+      description: Unfollow a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID to unfollow
+      responses:
+        "200":
+          description: User unfollowed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Not following this user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/me/analytics:
+    get:
+      tags:
+        - Users
+      summary: Get user analytics
+      description: Retrieve analytics for authenticated user (recipes, engagement, followers)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      totalRecipes:
+                        type: integer
+                        example: 25
+                      publishedRecipes:
+                        type: integer
+                        example: 20
+                      draftRecipes:
+                        type: integer
+                        example: 5
+                      engagement:
+                        type: object
+                        properties:
+                          totalReactions:
+                            type: integer
+                            example: 350
+                          likes:
+                            type: integer
+                            example: 150
+                          loves:
+                            type: integer
+                            example: 120
+                          fires:
+                            type: integer
+                            example: 80
+                          saves:
+                            type: integer
+                            example: 200
+                          comments:
+                            type: integer
+                            example: 75
+                      social:
+                        type: object
+                        properties:
+                          followers:
+                            type: integer
+                            example: 142
+                          following:
+                            type: integer
+                            example: 98
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
