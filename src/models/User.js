@@ -104,12 +104,12 @@ userSchema.methods.generateRefreshToken = function () {
 
 // Virtual for follower count
 userSchema.virtual("followerCount").get(function () {
-  return this.followers.length;
+  return this.followers ? this.followers.length : 0;
 });
 
 // Virtual for following count
 userSchema.virtual("followingCount").get(function () {
-  return this.following.length;
+  return this.following ? this.following.length : 0;
 });
 
 // Ensure virtuals are included in JSON

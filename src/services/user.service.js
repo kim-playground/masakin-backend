@@ -9,7 +9,12 @@ const getUserProfile = async (userId) => {
   const user = await User.findById(userId)
     .select("-password -refreshToken")
     .populate("followers", "name email avatar")
-    .populate("following", "name email avatar");
+    .populate("following", "name email avatar")
+    .populate({
+      path: "savedRecipes",
+      select: "title image category cookingTime difficulty author",
+      populate: { path: "author", select: "name avatar" },
+    });
 
   if (!user) {
     throw new ApiError(404, "User not found", "USER_NOT_FOUND");

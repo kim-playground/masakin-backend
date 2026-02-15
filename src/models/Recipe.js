@@ -13,23 +13,18 @@ const recipeSchema = new mongoose.Schema(
       required: [true, "Recipe description is required"],
       maxlength: [2000, "Description cannot exceed 2000 characters"],
     },
-    ingredients: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
-    steps: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
-    images: [
-      {
-        type: String,
-      },
-    ],
+    ingredients: {
+      type: [String],
+      required: true,
+    },
+    steps: {
+      type: [String],
+      required: true,
+    },
+    images: {
+      type: [String],
+      default: [],
+    },
     videoUrl: {
       type: String,
       default: null,
@@ -52,6 +47,21 @@ const recipeSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "Category is required"],
+      enum: [
+        "Breakfast",
+        "Brunch",
+        "Lunch",
+        "Dinner",
+        "Dessert",
+        "Appetizer",
+        "Salad",
+        "Soup",
+        "Drink",
+        "Snack",
+        "Vegetarian",
+        "Vegan",
+        "Other",
+      ],
       trim: true,
     },
     tags: [
@@ -96,7 +106,7 @@ const recipeSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["draft", "published"],
-      default: "draft",
+      default: "published",
     },
   },
   {
@@ -114,11 +124,14 @@ recipeSchema.index({ createdAt: -1 });
 
 // Virtual for total reactions count
 recipeSchema.virtual("totalReactions").get(function () {
-  return (
-    this.reactions.like.length +
-    this.reactions.love.length +
-    this.reactions.fire.length
-  );
+  if (this.reactions) {
+    return (
+      (this.reactions.like?.length || 0) +
+      (this.reactions.love?.length || 0) +
+      (this.reactions.fire?.length || 0)
+    );
+  }
+  return 0;
 });
 
 // Ensure virtuals are included in JSON
