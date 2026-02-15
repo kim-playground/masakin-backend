@@ -78,6 +78,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/OMn5wkE2zJU?si=row0vEfSaBRFRfZb",
     status: "published",
     authorEmail: "lanisa@masakin.com",
   },
@@ -108,6 +109,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/ahFCDNEog9o?si=jH6f0lPAlRhcw9tR",
     status: "published",
     authorEmail: "jisoo@masakin.com",
   },
@@ -138,6 +140,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/VZOHHCosuzY?si=A0wxQ5TwaSH4rCcf",
     status: "published",
     authorEmail: "jennie@masakin.com",
   },
@@ -169,6 +172,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/mzZKAa4GUcc?si=EIgkQiiiY_3iHKTI",
     status: "published",
     authorEmail: "rose@masakin.com",
   },
@@ -200,6 +204,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/dvd1-b21MxY?si=S8MrVqPZ_NosQJJ2",
     status: "published",
     authorEmail: "lalisa@masakin.com",
   },
@@ -230,6 +235,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/SGqal-DGPNo?si=lc5w8aUvem8iQQRl",
     status: "published",
     authorEmail: "rose@masakin.com",
   },
@@ -260,6 +266,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1560070094-e1f2ddec4337?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/DXqO6qUh5FA?si=qjO4pZyYq6Kz2opM",
     status: "published",
     authorEmail: "jisoo@masakin.com",
   },
@@ -291,6 +298,7 @@ const mockRecipes = [
     images: [
       "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80",
     ],
+    videoUrl: "https://youtu.be/OX1Bxv5Hw3U?si=qjkgcjkmHCexc__6",
     status: "published",
     authorEmail: "lanisa@masakin.com",
   },
