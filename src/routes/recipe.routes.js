@@ -1,6 +1,5 @@
 const express = require("express");
 const recipeController = require("../controllers/recipe.controller");
-const commentController = require("../controllers/comment.controller");
 const { authenticate, optionalAuth } = require("../middleware/auth.middleware");
 const validate = require("../middleware/validation.middleware");
 const {
@@ -9,10 +8,6 @@ const {
   queryRecipeSchema,
   reactionSchema,
 } = require("../validations/recipe.validation");
-const {
-  createCommentSchema,
-  queryCommentSchema,
-} = require("../validations/comment.validation");
 
 const router = express.Router();
 
@@ -47,18 +42,5 @@ router.delete("/:id/react", authenticate, recipeController.removeReaction);
 // Save/bookmark routes
 router.post("/:id/save", authenticate, recipeController.saveRecipe);
 router.delete("/:id/save", authenticate, recipeController.unsaveRecipe);
-
-// Comment routes
-router.post(
-  "/:id/comments",
-  authenticate,
-  validate(createCommentSchema),
-  commentController.createComment,
-);
-router.get(
-  "/:id/comments",
-  validate(queryCommentSchema),
-  commentController.getComments,
-);
 
 module.exports = router;

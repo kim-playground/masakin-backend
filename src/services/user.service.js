@@ -168,14 +168,12 @@ const getAnalytics = async (userId) => {
   let totalLoves = 0;
   let totalFires = 0;
   let totalSaves = 0;
-  let totalComments = 0;
 
   recipes.forEach((recipe) => {
     totalLikes += recipe.reactions.like.length;
     totalLoves += recipe.reactions.love.length;
     totalFires += recipe.reactions.fire.length;
     totalSaves += recipe.savesCount;
-    totalComments += recipe.commentsCount;
   });
 
   return {
@@ -188,7 +186,6 @@ const getAnalytics = async (userId) => {
       loves: totalLoves,
       fires: totalFires,
       saves: totalSaves,
-      comments: totalComments,
     },
     social: {
       followers: user.followers.length,
