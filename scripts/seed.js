@@ -17,46 +17,34 @@ const connectDB = async () => {
 // Mock users data
 const mockUsers = [
   {
-    name: "Chef Thomas",
-    email: "thomas@masakin.com",
+    name: "Chef Lanisa",
+    email: "lanisa@masakin.com",
     password: "password123",
     bio: "Passionate about creating delicious pasta dishes",
   },
   {
-    name: "Chef Maria",
-    email: "maria@masakin.com",
+    name: "Chef Jisoo",
+    email: "jisoo@masakin.com",
     password: "password123",
     bio: "Rice and Asian cuisine specialist",
   },
   {
-    name: "Chef Ana",
-    email: "ana@masakin.com",
+    name: "Chef Jennie",
+    email: "jennie@masakin.com",
     password: "password123",
     bio: "Health and wellness food advocate",
   },
   {
-    name: "Chef Raj",
-    email: "raj@masakin.com",
+    name: "Chef Rose",
+    email: "rose@masakin.com",
     password: "password123",
     bio: "Curry and spice master",
   },
   {
-    name: "Chef Marco",
-    email: "marco@masakin.com",
+    name: "Chef Lalisa",
+    email: "lalisa@masakin.com",
     password: "password123",
     bio: "Italian pizza artisan",
-  },
-  {
-    name: "Chef Gordon",
-    email: "gordon@masakin.com",
-    password: "password123",
-    bio: "Premium meat and steak expert",
-  },
-  {
-    name: "Chef Julia",
-    email: "julia@masakin.com",
-    password: "password123",
-    bio: "Seafood and fish cuisine enthusiast",
   },
 ];
 
@@ -91,7 +79,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "thomas@masakin.com",
+    authorEmail: "lanisa@masakin.com",
   },
   {
     title: "Rice with Chili Sauce and Chicken",
@@ -121,7 +109,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "maria@masakin.com",
+    authorEmail: "jisoo@masakin.com",
   },
   {
     title: "Healthy Oat with Almond",
@@ -151,7 +139,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "ana@masakin.com",
+    authorEmail: "jennie@masakin.com",
   },
   {
     title: "Spicy Curry with Chili Powder",
@@ -182,7 +170,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "raj@masakin.com",
+    authorEmail: "rose@masakin.com",
   },
   {
     title: "Mushroom Pizza and Onion with Vegetables Topping",
@@ -213,7 +201,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "marco@masakin.com",
+    authorEmail: "lalisa@masakin.com",
   },
   {
     title: "Cow Steak with Vegetables and Sauce",
@@ -243,7 +231,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "gordon@masakin.com",
+    authorEmail: "rose@masakin.com",
   },
   {
     title: "Fish Meat and Vegetables with Potato",
@@ -273,37 +261,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1560070094-e1f2ddec4337?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "julia@masakin.com",
-  },
-  {
-    title: "Creamy Avacado Toast",
-    description:
-      "A simple yet delicious brunch option featuring creamy avocado on toasted sourdough bread, topped with poached eggs and chili flakes.",
-    category: "Brunch",
-    cookingTime: 15,
-    portion: 2,
-    difficulty: "easy",
-    tags: ["avocado", "toast", "brunch", "healthy"],
-    ingredients: [
-      "2 slices sourdough bread",
-      "1 ripe avocado",
-      "2 eggs",
-      "Chili flakes",
-      "Lemon juice",
-      "Salt & pepper",
-    ],
-    steps: [
-      "Toast the sourdough bread",
-      "Mash avocado with lemon juice, salt, and pepper",
-      "Poach the eggs",
-      "Spread avocado on toast",
-      "Top with poached eggs and chili flakes",
-    ],
-    images: [
-      "https://images.unsplash.com/photo-1525351484163-7529414395d8?w=800&q=80",
-    ],
-    status: "published",
-    authorEmail: "ana@masakin.com",
+    authorEmail: "jisoo@masakin.com",
   },
   {
     title: "Tropical Fruit Salad",
@@ -334,38 +292,7 @@ const mockRecipes = [
       "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80",
     ],
     status: "published",
-    authorEmail: "ana@masakin.com",
-  },
-  {
-    title: "Creamy Pumpkin Soup",
-    description:
-      "Warm and comforting creamy pumpkin soup, seasoned with nutmeg and served with crusty bread. Perfect for chilly evenings.",
-    category: "Soup",
-    cookingTime: 40,
-    portion: 4,
-    difficulty: "medium",
-    tags: ["pumpkin", "soup", "vegetarian", "comfort"],
-    ingredients: [
-      "1kg pumpkin, peeled and chopped",
-      "1 onion, chopped",
-      "2 cloves garlic",
-      "500ml vegetable stock",
-      "150ml heavy cream",
-      "Nutmeg",
-      "Olive oil",
-    ],
-    steps: [
-      "Sauté onion and garlic in olive oil",
-      "Add pumpkin chunks and cook for 5 mins",
-      "Pour in vegetable stock and simmer until pumpkin is soft",
-      "Blend soup until smooth",
-      "Stir in cream and season with nutmeg",
-    ],
-    images: [
-      "https://images.unsplash.com/photo-1547496502-ffa222d7d38cc?w=800&q=80",
-    ],
-    status: "published",
-    authorEmail: "thomas@masakin.com",
+    authorEmail: "lanisa@masakin.com",
   },
 ];
 
@@ -378,6 +305,16 @@ const seedDatabase = async () => {
     console.log("🗑️  Clearing existing data...");
     await User.deleteMany({});
     await Recipe.deleteMany({});
+    try {
+      await mongoose.connection.collection("comments").drop();
+      console.log("🗑️  Comments collection dropped");
+    } catch (error) {
+      if (error.code === 26) {
+        console.log("ℹ️  Comments collection does not exist");
+      } else {
+        console.error("❌ Error dropping comments collection:", error);
+      }
+    }
     console.log("✅ Existing data cleared\n");
 
     // Create users one by one to trigger pre-save hooks (password hashing)
