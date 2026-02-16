@@ -118,8 +118,6 @@ http://localhost:5001/api-docs
 - `DELETE /api/v1/recipes/:id/react` - Remove reaction (protected)
 - `POST /api/v1/recipes/:id/save` - Save recipe (protected)
 - `DELETE /api/v1/recipes/:id/save` - Unsave recipe (protected)
-- `POST /api/v1/recipes/:id/comments` - Add comment (protected)
-- `GET /api/v1/recipes/:id/comments` - Get comments
 
 ### Users
 
@@ -227,7 +225,7 @@ curl -X POST http://localhost:5001/api/v1/recipes \
 - Content (title, description, ingredients, steps)
 - Media (images, video URL)
 - Metadata (cooking time, portion, difficulty, category, tags)
-- Engagement (reactions, saves, comments count)
+- Engagement (reactions, saves, follow count)
 - Status (draft/published)
 
 ### Comment Model
@@ -251,16 +249,12 @@ Users can save recipes to their collection. The system tracks the save count on 
 
 Bidirectional follow system where users can follow other users. Both followers and following lists are maintained.
 
-### Threaded Comments
-
-Comments support threading by allowing a `parentComment` field, enabling nested discussions.
-
 ### Analytics
 
 Authors can view their statistics including:
 
 - Total recipes (published/draft)
-- Engagement metrics (reactions, saves, comments)
+- Engagement metrics (reactions, saves, follow count)
 - Social stats (followers/following)
 
 ## 🚀 Production Deployment

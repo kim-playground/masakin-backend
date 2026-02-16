@@ -21,7 +21,6 @@ The API documentation includes:
 - **Authentication Endpoints**: Register, login, refresh token, logout
 - **Recipe Management**: CRUD operations, search, filter, pagination
 - **Social Features**: Reactions (like, love, fire), save/bookmark
-- **Comments**: Threaded comment system
 - **User Management**: Profile, follow/unfollow, analytics
 - **Request/Response Schemas**: Complete data models
 - **Error Responses**: Standardized error format

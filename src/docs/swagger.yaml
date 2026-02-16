@@ -143,9 +143,6 @@ components:
         savesCount:
           type: integer
           example: 42
-        commentsCount:
-          type: integer
-          example: 15
         status:
           type: string
           enum: [draft, published]
@@ -1130,9 +1127,6 @@ paths:
                           saves:
                             type: integer
                             example: 200
-                          comments:
-                            type: integer
-                            example: 75
                       social:
                         type: object
                         properties:
