@@ -18,8 +18,6 @@ tags:
     description: User authentication and authorization endpoints
   - name: Recipes
     description: Recipe management, reactions, and bookmarks
-  - name: Comments
-    description: Comment system with threading support
   - name: Users
     description: User profiles, follow/unfollow, and analytics
 
